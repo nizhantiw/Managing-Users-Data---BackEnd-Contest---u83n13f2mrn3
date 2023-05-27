@@ -1,17 +1,26 @@
 // Note: You have to edit only this file
 const User = require('../models/userModel');
 
-// Registering user into database
 const createUser = async (req, res) => {
   try {
-    const newUser = new User(req.body);
-    await newUser.save();
-    res.status(201).json(newUser);
+    const { name, email, password } = req.body;
+
+    // Validate the input data
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const newUser = new User({ name, email, password });
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
   } catch (err) {
     console.error('Failed to create user', err);
     res.status(500).json({ error: 'Failed to create user' });
   }
 };
+
+// module.exports = { createUser };
+
 
 // Get User From a Particular id
 const getUser = async (req, res) => {
